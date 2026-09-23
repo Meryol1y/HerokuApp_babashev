@@ -1,17 +1,79 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Scanner;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+public class Main {
+
+    //  РЕЕСТР ТЕСТОВ — добавляйте новые тесты сюда
+    private static final Map<Integer, ITest> TEST_REGISTRY = new LinkedHashMap<>();
+
+    static {
+        TEST_REGISTRY.put(1, new Test1());
+        TEST_REGISTRY.put(2, new Test2());
+        // TEST_REGISTRY.put(3, new Test3());  // Раскомментируйте, когда добавите Test3
+        // TEST_REGISTRY.put(4, new Test4());
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Показываем меню
+        printMenu();
+
+        System.out.print("Введите номер теста (или 'all' для запуска всех): ");
+        String input = scanner.nextLine().trim().toLowerCase();
+
+        if (input.equals("all")) {
+            System.out.println("\n=== Запуск ВСЕХ тестов ===\n");
+            for (Map.Entry<Integer, ITest> entry : TEST_REGISTRY.entrySet()) {
+                runTest(entry.getKey(), entry.getValue());
+            }
+        } else {
+            try {
+                int testNumber = Integer.parseInt(input);
+                ITest test = TEST_REGISTRY.get(testNumber);
+
+                if (test != null) {
+                    System.out.println("\n=== Запуск теста №" + testNumber + " ===\n");
+                    runTest(testNumber, test);
+                } else {
+                    System.out.println("❌ Тест с номером " + testNumber + " не найден!");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Неверный ввод! Введите число или 'all'.");
+            }
         }
+
+        scanner.close();
+        System.out.println("\n=== Работа завершена ===");
+    }
+
+    private static void runTest(int number, ITest test) {
+        String testName = test.getClass().getSimpleName();
+        System.out.println("--- [" + number + "] " + testName + " ---");
+        try {
+            test.setUp();
+            test.execute();
+            System.out.println("✅ " + testName + " пройден!\n");
+        } catch (Exception e) {
+            System.out.println("❌ " + testName + " упал: " + e.getMessage() + "\n");
+            e.printStackTrace();
+        } finally {
+            test.tearDown();
+        }
+    }
+
+    private static void printMenu() {
+        System.out.println("╔══════════════════════════════════╗");
+        System.out.println("║         МЕНЮ ЗАПУСКА ТЕСТОВ      ║");
+        System.out.println("╠══════════════════════════════════╣");
+        for (Map.Entry<Integer, ITest> entry : TEST_REGISTRY.entrySet()) {
+            String testName = entry.getValue().getClass().getSimpleName();
+            System.out.printf("║  %-5d -> %-30s║%n", entry.getKey(), testName);
+        }
+        System.out.println("║  all -> Запустить все тесты     ║");
+        System.out.println("╚══════════════════════════════════╝");
     }
 }
