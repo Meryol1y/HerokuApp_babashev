@@ -12,8 +12,8 @@ public class Main {
     static {
         TEST_REGISTRY.put(1, new Test1());
         TEST_REGISTRY.put(2, new Test2());
-        // TEST_REGISTRY.put(3, new Test3());  // Раскомментируйте, когда добавите Test3
-        // TEST_REGISTRY.put(4, new Test4());
+        TEST_REGISTRY.put(3, new Test3());
+        TEST_REGISTRY.put(4, new Test4());
     }
 
     public static void main(String[] args) {

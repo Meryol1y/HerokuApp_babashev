@@ -2,7 +2,7 @@ package org.example;
 
 import org.openqa.selenium.WebDriver;
 
-public class Test2 implements ITest {
+public class Test4 implements ITest {
     private WebDriver driver;
     private PageObject pageObject;
 
@@ -15,10 +15,12 @@ public class Test2 implements ITest {
 
     @Override
     public void execute() {
-        driver.get("http://the-internet.herokuapp.com/checkboxes");
-        pageObject.clickByXpath("/html/body/div[2]/div/div/form/input[1]");
-
-        pageObject.clickByXpath("/html/body/div[2]/div/div/form/input[2]");
+        driver.get("http://the-internet.herokuapp.com/inputs");
+        pageObject.clickBySelector("#content > div > div > div > input[type=number]");
+        pageObject.pressArrowUP(3);
+        pageObject.waitForMillis(1000);
+        pageObject.pressArrowDown(3);
+        pageObject.waitForMillis(500);
     }
 
     @Override
@@ -26,3 +28,4 @@ public class Test2 implements ITest {
         if (driver != null) driver.quit();
     }
 }
+
